@@ -42,20 +42,18 @@ header {
 
 .player-info.container {
   margin: 30px 0 30px 0;
-  width: 500px;
 }
 
 .buttons.container,
 .name-input.container {
   margin: 10px 0 20px;
-  width: inherit;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
 }
-
 
 .name-input.container {
   justify-content: space-between;
+  width: 500px;
 }
 
 
