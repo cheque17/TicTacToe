@@ -4,15 +4,21 @@ const gameBoardModule = (() => {
   const gameBoard = Array.from(tiles);
 
   const showGame = () => {
-    tiles.forEach(() => {
-      tiles.addEventListener('click', displayController.interaction)
+    tiles.forEach((tile) => {
+      tile.addEventListener('click', displayController.playerAction)
     })
   }
-  return {gameBoard}
+  return {
+    gameBoard,
+    showGame,
+  }
 })();
 
 const playerCreator = (name, marker) => {
-  return {name, marker};
+  return {
+    name, 
+    marker
+  };
 }
 
 const displayController = (() => {
@@ -30,10 +36,17 @@ const displayController = (() => {
     ]
     playerTurn = 0;
     gameOver = false;
+    gameBoardModule.showGame();
+  }
+
+  const playerAction = (event) => {
+    let tileOrderNumber = parseInt(event.target.id.slice(-1));
+    console.log(tileOrderNumber);
   }
 
   return{
     startGame,
+    playerAction
   };
 })();
 
