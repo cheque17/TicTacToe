@@ -1,19 +1,28 @@
-
+//Module that contains anything related to the gameboard (changes, display, tiles).
 const gameBoardModule = (() => {
+
   const tiles = document.querySelectorAll('.grid.item');
   const gameBoard = Array.from(tiles);
 
-  const showGame = () => {
-    tiles.forEach((tile) => {
-      tile.addEventListener('click', displayController.playerAction)
-    })
+  let selectTile = (tileSelected, playerTurn) => {
+    console.log(playerTurn);
+    console.log(tileSelected);
+    if (playerTurn===0){
+      tileSelected.innerHTML = '<img src=\'images/close.png\'>';     
+    } else if (playerTurn===1) {
+      tileSelected.innerHTML = '<img src=\'images/dry-clean.png\'>';
+    }    
+    console.log(tileSelected.innerHTML);
   }
+
   return {
     gameBoard,
-    showGame,
+    tiles,
+    selectTile,
   }
 })();
 
+//Factory function used to create the players
 const playerCreator = (name, marker) => {
   return {
     name, 
@@ -21,27 +30,33 @@ const playerCreator = (name, marker) => {
   };
 }
 
-const displayController = (() => {
-  let players = [];
-  let playerTurn;
-  let gameOver = false;
 
-  let player1Name = document.querySelector('#player1').value;
-  let player2Name = document.querySelector('#player2').value;
+//Module that contains the logic of the game (player creation, actions taken on the board, turns)
+const gameLogic = (() => {
+  let players = [];
+  let _playerTurn;
+  let _gameOver = false;
+
+  let _player1Name = document.querySelector('#player1').value;
+  let _player2Name = document.querySelector('#player2').value;
 
   const startGame = () => {
     players = [
-      playerCreator(player1Name, 'X'),
-      playerCreator(player2Name, 'O')
+      playerCreator(_player1Name, 'X'),
+      playerCreator(_player2Name, 'O')
     ]
-    playerTurn = 0;
-    gameOver = false;
-    gameBoardModule.showGame();
+    _playerTurn = 0;
+    _gameOver = false;
+    gameBoardModule.tiles.forEach((tile) => {
+      tile.addEventListener('click', playerAction)
+    })
   }
 
   const playerAction = (event) => {
-    let tileOrderNumber = parseInt(event.target.id.slice(-1));
-    console.log(tileOrderNumber);
+    //let chosenTile = parseInt(event.target.id.slice(-1));
+    let tileElement = event.target;  
+    gameBoardModule.selectTile(tileElement, _playerTurn)
+    _playerTurn= _playerTurn === 0 ? 1 : 0;
   }
 
   return{
@@ -53,11 +68,11 @@ const displayController = (() => {
 
 
 
-//Event Listener
+//Event Listeners
 
 const startGameButton = document.querySelector('#start');
 startGameButton.addEventListener('click', () => {
-  displayController.startGame();
+  gameLogic.startGame();
   console.log('Button working');
 })
 
