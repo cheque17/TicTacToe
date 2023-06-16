@@ -9,9 +9,10 @@ const playerCreator = (name, marker) => {
 //Module that contains anything related to the gameboard (changes, display, tiles).
 const gameBoardModule = (() => {
 
-  const gameBoard = [];
+  const _gameBoard = [];
 
-  const board = document.querySelector('#board');
+  const _xMarker = 'close.png';
+  const oMarker = 'dry-clean.png';
 
   const createGameboard = ()=> {
     for (let i=0; i<9; i++) {
@@ -19,18 +20,28 @@ const gameBoardModule = (() => {
       newTile.classList.add('grid');
       newTile.classList.add('item');
       newTile.setAttribute('id', `item${i}`)
-      board.appendChild(newTile);
+      document.querySelector('#board').appendChild(newTile);
+      _gameBoard.push(newTile)
     }
+    const gridItems = document.querySelectorAll('.item');
+    gridItems.forEach( gridItem => {
+      gridItem.addEventListener('click', gameLogic.playerMove)
+    })
   }
 
-  let selectTile = (tileSelected, playerTurn) => {
-
+  let markTile = (tileSelected, playerMark) => {
+    _gameBoard[tileSelected] = playerMark;
+    
   }
+
+  const getGameboard = ()=> _gameBoard;
+  const getGridItem = ()=>gridItems;
 
   return {
-    gameBoard,
     createGameboard,
-    selectTile,
+    markTile,
+    getGameboard,
+    getGridItem
   }
 })();
 
@@ -40,7 +51,7 @@ const gameBoardModule = (() => {
 const gameLogic = (() => {
   let players = [];
   let _playerTurn;
-  let _gameOver = false;
+  let _gameOver;
 
   let _player1Name = document.querySelector('#player1').value;
   let _player2Name = document.querySelector('#player2').value;
@@ -53,21 +64,20 @@ const gameLogic = (() => {
     gameBoardModule.createGameboard()
     _playerTurn = 0;
     _gameOver = false;
-    gameBoardModule.tiles.forEach((tile) => {
-      tile.addEventListener('click', playerAction)
-    })
+    
   }
 
-  const playerAction = (event) => {
-    //let chosenTile = parseInt(event.target.id.slice(-1));
-    let tileElement = event.target;  
-    gameBoardModule.selectTile(tileElement, _playerTurn)
+  const playerMove = (event) => {
+    let chosenTile = parseInt(event.target.id.slice(-1));
+    gameBoardModule.markTile(chosenTile, players[_playerTurn].marker)
+    /*let tileElement = event.target;  
+    gameBoardModule.selectTile(tileElement, _playerTurn)*/
     _playerTurn= _playerTurn === 0 ? 1 : 0;
   }
 
   return{
     startGame,
-    playerAction
+    playerMove,
   };
 })();
 
