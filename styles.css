@@ -38,6 +38,7 @@ header {
   justify-content: center;
   align-items: center;
   height: 600px;
+  padding-bottom: 70px;
 }
 
 .player-info.container {

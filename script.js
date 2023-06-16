@@ -1,27 +1,3 @@
-//Module that contains anything related to the gameboard (changes, display, tiles).
-const gameBoardModule = (() => {
-
-  const tiles = document.querySelectorAll('.grid.item');
-  const gameBoard = Array.from(tiles);
-
-  let selectTile = (tileSelected, playerTurn) => {
-    console.log(playerTurn);
-    console.log(tileSelected);
-    if (playerTurn===0){
-      tileSelected.innerHTML = '<img src=\'images/close.png\'>';     
-    } else if (playerTurn===1) {
-      tileSelected.innerHTML = '<img src=\'images/dry-clean.png\'>';
-    }    
-    console.log(tileSelected.innerHTML);
-  }
-
-  return {
-    gameBoard,
-    tiles,
-    selectTile,
-  }
-})();
-
 //Factory function used to create the players
 const playerCreator = (name, marker) => {
   return {
@@ -29,6 +5,35 @@ const playerCreator = (name, marker) => {
     marker
   };
 }
+
+//Module that contains anything related to the gameboard (changes, display, tiles).
+const gameBoardModule = (() => {
+
+  const gameBoard = [];
+
+  const board = document.querySelector('#board');
+
+  const createGameboard = ()=> {
+    for (let i=0; i<9; i++) {
+      let newTile = document.createElement('div');
+      newTile.classList.add('grid');
+      newTile.classList.add('item');
+      newTile.setAttribute('id', `item${i}`)
+      board.appendChild(newTile);
+    }
+  }
+
+  let selectTile = (tileSelected, playerTurn) => {
+
+  }
+
+  return {
+    gameBoard,
+    createGameboard,
+    selectTile,
+  }
+})();
+
 
 
 //Module that contains the logic of the game (player creation, actions taken on the board, turns)
@@ -45,6 +50,7 @@ const gameLogic = (() => {
       playerCreator(_player1Name, 'X'),
       playerCreator(_player2Name, 'O')
     ]
+    gameBoardModule.createGameboard()
     _playerTurn = 0;
     _gameOver = false;
     gameBoardModule.tiles.forEach((tile) => {
