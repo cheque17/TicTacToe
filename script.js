@@ -1,5 +1,5 @@
 //Factory function used to create the players
-const playerCreator = (name, marker) => {
+const createPlayer = (name, marker) => {
   return {
     name, 
     marker
@@ -12,7 +12,7 @@ const gameBoardModule = (() => {
   const _gameBoard = [];
 
   const _xMarker = 'close.png';
-  const oMarker = 'dry-clean.png';
+  const _oMarker = 'dry-clean.png';
 
   const createGameboard = ()=> {
     for (let i=0; i<9; i++) {
@@ -58,8 +58,8 @@ const gameLogic = (() => {
 
   const startGame = () => {
     players = [
-      playerCreator(_player1Name, 'X'),
-      playerCreator(_player2Name, 'O')
+      createPlayer(_player1Name, 'X'),
+      createPlayer(_player2Name, 'O')
     ]
     gameBoardModule.createGameboard()
     _playerTurn = 0;
@@ -89,6 +89,5 @@ const gameLogic = (() => {
 const startGameButton = document.querySelector('#start');
 startGameButton.addEventListener('click', () => {
   gameLogic.startGame();
-  console.log('Button working');
 })
 
