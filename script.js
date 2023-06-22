@@ -66,8 +66,14 @@ const gameLogic = (() => {
     ]
     gameBoardModule.createGameboard()
     _playerTurn = 0;
-    _gameOver = false;
-    
+    _gameOver = false;    
+  }
+
+  const restartGame = ()=> {
+    for (i=0; i<9; i++) {
+    document.querySelector(`#item${i}`).innerHTML = '';
+    gameBoardModule.getGameboard()[i] ='';
+    }
   }
 
   const playerMove = (event) => {
@@ -126,7 +132,8 @@ const gameLogic = (() => {
   return{
     startGame,
     playerMove,
-    getPlayers
+    getPlayers,
+    restartGame
   };
 })();
 
