@@ -11,9 +11,6 @@ const gameBoardModule = (() => {
 
   const _gameBoard = ["","","","","","","","",""];
 
-  const _xMarker = 'close.png';
-  const _oMarker = 'dry-clean.png';
-
   const createGameboard = ()=> {
     for (let i=0; i<9; i++) {
       let newTile = document.createElement('div');
@@ -30,22 +27,20 @@ const gameBoardModule = (() => {
 
   let markTile = (arrayIndex, playerMark, chosenTile) => {
     if (playerMark === 'O') {
-    chosenTile.innerHTML = `<img src='images/${_oMarker}'>`;
+    chosenTile.innerHTML = '<img src=\'images/dry-clean.png\'>';
     } else if (playerMark === 'X') {
-      chosenTile.innerHTML = `<img src='images/${_xMarker}'>`;
+      chosenTile.innerHTML = '<img src=\'images/close.png\'>';
     }
     _gameBoard[arrayIndex] = playerMark;
     
   }
 
   const getGameboard = ()=> _gameBoard;
-  const getGridItem = ()=>gridItems;
 
   return {
     createGameboard,
     markTile,
     getGameboard,
-    getGridItem
   }
 })();
 
@@ -54,13 +49,17 @@ const gameBoardModule = (() => {
 //Module that contains the logic of the game (player creation, actions taken on the board, turns)
 const gameLogic = (() => {
   let players = [];
+
+  const getPlayers = ()=> players;
+
   let _playerTurn;
   let _gameOver;
 
-  let _player1Name = document.querySelector('#player1').value;
-  let _player2Name = document.querySelector('#player2').value;
+  
 
   const startGame = () => {
+    let _player1Name = document.querySelector('#player1').value;
+    let _player2Name = document.querySelector('#player2').value;
     players = [
       createPlayer(_player1Name, 'X'),
       createPlayer(_player2Name, 'O')
@@ -72,6 +71,10 @@ const gameLogic = (() => {
   }
 
   const playerMove = (event) => {
+    if(_gameOver) {
+      return
+    }
+
     let arrayIndex = parseInt(event.target.id.slice(-1));
     let tileElement = event.target; 
 
@@ -81,17 +84,64 @@ const gameLogic = (() => {
 
     gameBoardModule.markTile(arrayIndex, players[_playerTurn].marker, tileElement); 
 
-
+    if (_checkForWin(gameBoardModule.getGameboard())) {
+      _gameOver=true;
+      displayMessages.createMessage(`${players[_playerTurn].name} has won!`);
+    } else if (_checkForTie(gameBoardModule.getGameboard())) {
+      _gameOver=true;
+      displayMessages.createMessage('It\'s a tie.')
+    }
     _playerTurn= _playerTurn === 0 ? 1 : 0;
+
+    if (!_gameOver){
+    displayMessages.createMessage(`It's ${players[_playerTurn].name} turn!`);
+    }
+  }
+
+  const _checkForWin = gameboard => {
+    const winningCombinations = [
+      [0,1,2],
+      [3,4,5],
+      [6,7,8],
+      [0,3,6],
+      [1,4,7],
+      [2,5,8],
+      [0,4,8],
+      [2,4,6]
+    ]
+
+    for (let i=0; i<winningCombinations.length; i++) {
+      let [a,b,c] = winningCombinations[i];
+      if (gameboard[a] && gameboard[a]===gameboard[b] && gameboard[a]===gameboard[c]) {
+        return true;
+      }
+    }    
+    return false;
+  }
+
+  const _checkForTie = gameboard => {
+    return gameboard.every(tile => tile !== "");
   }
 
   return{
     startGame,
     playerMove,
+    getPlayers
   };
 })();
 
 
+const displayMessages = (() =>{
+
+  const createMessage = message => {
+    document.querySelector('#message-box').innerText = message;
+  }
+
+  return {
+    createMessage
+  }
+
+})();
 
 
 //Event Listeners
@@ -99,5 +149,10 @@ const gameLogic = (() => {
 const startGameButton = document.querySelector('#start');
 startGameButton.addEventListener('click', () => {
   gameLogic.startGame();
+})
+
+const restartButton = document.querySelector('#restart');
+restartButton.addEventListener('click', ()=> {
+  gameLogic.restartGame();
 })
 
