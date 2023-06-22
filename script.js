@@ -21,7 +21,6 @@ const gameBoardModule = (() => {
       newTile.classList.add('item');
       newTile.setAttribute('id', `item${i}`)
       document.querySelector('#board').appendChild(newTile);
-      _gameBoard.push(newTile)
     }
     const gridItems = document.querySelectorAll('.item');
     gridItems.forEach( gridItem => {
@@ -29,8 +28,13 @@ const gameBoardModule = (() => {
     })
   }
 
-  let markTile = (tileSelected, playerMark) => {
-    _gameBoard[tileSelected] = playerMark;
+  let markTile = (arrayIndex, playerMark, chosenTile) => {
+    if (playerMark === 'O') {
+    chosenTile.innerHTML = `<img src='images/${_oMarker}'>`;
+    } else if (playerMark === 'X') {
+      chosenTile.innerHTML = `<img src='images/${_xMarker}'>`;
+    }
+    _gameBoard[arrayIndex] = playerMark;
     
   }
 
@@ -68,10 +72,11 @@ const gameLogic = (() => {
   }
 
   const playerMove = (event) => {
-    let chosenTile = parseInt(event.target.id.slice(-1));
-    gameBoardModule.markTile(chosenTile, players[_playerTurn].marker)
-    /*let tileElement = event.target;  
-    gameBoardModule.selectTile(tileElement, _playerTurn)*/
+    let arrayIndex = parseInt(event.target.id.slice(-1));
+    let tileElement = event.target;  
+    gameBoardModule.markTile(arrayIndex, players[_playerTurn].marker, tileElement); 
+
+
     _playerTurn= _playerTurn === 0 ? 1 : 0;
   }
 
