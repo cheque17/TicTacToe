@@ -9,7 +9,7 @@ const createPlayer = (name, marker) => {
 //Module that contains anything related to the gameboard (changes, display, tiles).
 const gameBoardModule = (() => {
 
-  const _gameBoard = [];
+  const _gameBoard = ["","","","","","","","",""];
 
   const _xMarker = 'close.png';
   const _oMarker = 'dry-clean.png';
@@ -73,7 +73,12 @@ const gameLogic = (() => {
 
   const playerMove = (event) => {
     let arrayIndex = parseInt(event.target.id.slice(-1));
-    let tileElement = event.target;  
+    let tileElement = event.target; 
+
+    if (gameBoardModule.getGameboard()[arrayIndex]!=='') {
+      return
+    }
+
     gameBoardModule.markTile(arrayIndex, players[_playerTurn].marker, tileElement); 
 
 
