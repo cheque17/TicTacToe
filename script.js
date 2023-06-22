@@ -52,6 +52,7 @@ const gameLogic = (() => {
 
   const getPlayers = ()=> players;
 
+  let _gameBoardCreated = false;
   let _playerTurn;
   let _gameOver;
 
@@ -64,15 +65,24 @@ const gameLogic = (() => {
       createPlayer(_player1Name, 'X'),
       createPlayer(_player2Name, 'O')
     ]
-    gameBoardModule.createGameboard()
     _playerTurn = 0;
+    displayMessages.createMessage(`It's ${players[_playerTurn].name}'s turn!`)
+
+    if (_gameBoardCreated) {
+      return
+    }
+    gameBoardModule.createGameboard()
+    
     _gameOver = false;    
+    _gameBoardCreated = true;
   }
 
   const restartGame = ()=> {
     for (i=0; i<9; i++) {
     document.querySelector(`#item${i}`).innerHTML = '';
     gameBoardModule.getGameboard()[i] ='';
+    _gameOver = false;
+    displayMessages.createMessage(`It's ${players[_playerTurn].name}'s turn!`);
     }
   }
 
@@ -100,7 +110,7 @@ const gameLogic = (() => {
     _playerTurn= _playerTurn === 0 ? 1 : 0;
 
     if (!_gameOver){
-    displayMessages.createMessage(`It's ${players[_playerTurn].name} turn!`);
+    displayMessages.createMessage(`It's ${players[_playerTurn].name}'s turn!`);
     }
   }
 
